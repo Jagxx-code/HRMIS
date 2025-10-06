@@ -185,3 +185,45 @@ $$('.needs-validation').forEach(form => {
     form.classList.add('was-validated');
   }, false);
 });
+
+const travelModalEl = document.getElementById('travelModal');
+const travelModal = travelModalEl ? new bootstrap.Modal(travelModalEl) : null;
+// …after save/update/delete:
+travelModal?.hide();
+
+// ====== Sidebar modal triggers (Promotions, Travel, Details, Retirement, Waivers)
+(() => {
+  const modals = {
+    openPromotions: 'promotionsModal',
+    openTravel: 'travelAuthorityModal',
+    openDetails: 'detailsModal',
+    openRetirement: 'retirementModal',
+    openWaivers: 'waiversModal',
+  };
+
+  Object.entries(modals).forEach(([btnId, modalId]) => {
+    const trigger = document.getElementById(btnId);
+    const modalEl = document.getElementById(modalId);
+    if (!trigger || !modalEl) return;
+
+    const modal = new bootstrap.Modal(modalEl);
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.show();
+    });
+
+    // Handle form submission inside each modal
+    const form = modalEl.querySelector('form');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+      }
+      form.classList.remove('was-validated');
+      showToast(`${modalId.replace('Modal','')} submitted successfully!`, 'success');
+      modal.hide();
+      form.reset();
+    });
+  });
+})();

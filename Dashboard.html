@@ -22,7 +22,7 @@
     <!-- App styles -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- No‑flash theme init -->
+    <!-- No-flash theme init -->
     <script>
       (() => {
         const saved = localStorage.getItem('theme');
@@ -53,7 +53,7 @@
               <i class="bi bi-person-circle me-1" aria-hidden="true"></i> Account
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow">
-              <li><a class="dropdown-item" href="Login.html"><i class="bi bi-box-arrow-right me-2"></i>Sign out</a></li>
+              <li><a class="dropdown-item" href="./Login.html" data-logout><i class="bi bi-box-arrow-right me-2"></i>Sign out</a></li>
             </ul>
           </div>
         </div>
@@ -66,11 +66,11 @@
         <h2 class="h6 text-uppercase text-secondary">Sections</h2>
         <nav class="nav flex-column gap-1">
           <a class="nav-link active" href="#"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-          <a class="nav-link" href="#"><i class="bi bi-briefcase me-2"></i> Promotions</a>
-          <a class="nav-link" href="#"><i class="bi bi-airplane me-2"></i> Travel Authority</a>
-          <a class="nav-link" href="#"><i class="bi bi-person-badge me-2"></i> Details</a>
-          <a class="nav-link" href="#"><i class="bi bi-file-earmark-text me-2"></i> Retirement</a>
-          <a class="nav-link" href="#"><i class="bi bi-shield-check me-2"></i> Waivers</a>
+          <a class="nav-link" href="#" id="openPromotions"><i class="bi bi-briefcase me-2"></i> Promotions</a>
+          <a class="nav-link" href="#" id="openTravel"><i class="bi bi-airplane me-2"></i> Travel Authority</a>
+          <a class="nav-link" href="#" id="openDetails"><i class="bi bi-person-badge me-2"></i> Details</a>
+          <a class="nav-link" href="#" id="openRetirement"><i class="bi bi-file-earmark-text me-2"></i> Retirement</a>
+          <a class="nav-link" href="#" id="openWaivers"><i class="bi bi-shield-check me-2"></i> Waivers</a>
         </nav>
       </div>
     </aside>
@@ -82,11 +82,16 @@
     <div class="content">
       <main id="main" class="container-fluid py-4">
         <div class="row g-4">
-          <div class="col-lg-8">
+          <div class="col-12">
             <div class="card shadow-sm border-0">
               <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                 <h3 class="h6 mb-0">Travel Records</h3>
-                <input id="tableSearch" class="form-control form-control-sm w-auto" placeholder="Search records…">
+                <div class="d-flex align-items-center gap-2">
+                  <input id="tableSearch" class="form-control form-control-sm" placeholder="Search records…">
+                  <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#travelModal">
+                    <i class="bi bi-plus-circle me-1"></i> New Travel
+                  </button>
+                </div>
               </div>
               <div class="table-responsive">
                 <table class="table table-hover table-striped align-middle mb-0">
@@ -102,74 +107,287 @@
                   </thead>
                   <tbody id="travelTable">
                     <tr>
-                      <th scope="row">Jhon Rey Pasoquin</th>
+                      <th scope="row">Juan Dela Cruz</th>
                       <td>Police Lieutenant</td>
                       <td>Japan</td>
                       <td>Training</td>
-                      <td class="date">2025‑10‑20</td>
-                      <td class="date">2025‑10‑30</td>
+                      <td class="date">2025-10-20</td>
+                      <td class="date">2025-10-30</td>
                     </tr>
                     <tr>
-                      <th scope="row">James Albert Gonzales</th>
+                      <th scope="row">Maria Santos</th>
                       <td>Police Captain</td>
                       <td>Singapore</td>
                       <td>Conference</td>
-                      <td class="date">2025‑11‑02</td>
-                      <td class="date">2025‑11‑06</td>
+                      <td class="date">2025-11-02</td>
+                      <td class="date">2025-11-06</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
-
-          <div class="col-lg-4">
-            <div class="card shadow-sm border-0">
-              <div class="card-header bg-transparent">
-                <h3 class="h6 mb-0">New / Edit Travel</h3>
-              </div>
-              <div class="card-body">
-                <form id="travelForm" class="row g-3 needs-validation" novalidate>
-                  <div class="col-sm-6">
-                    <label for="rank" class="form-label">Rank</label>
-                    <input id="rank" class="form-control" required>
-                    <div class="invalid-feedback">Rank is required.</div>
-                  </div>
-                  <div class="col-sm-6">
-                    <label for="name" class="form-label">Name</label>
-                    <input id="name" class="form-control" required>
-                    <div class="invalid-feedback">Name is required.</div>
-                  </div>
-                  <div class="col-12">
-                    <label for="destination" class="form-label">Destination</label>
-                    <input id="destination" class="form-control" required>
-                    <div class="invalid-feedback">Destination is required.</div>
-                  </div>
-                  <div class="col-12">
-                    <label for="purpose" class="form-label">Purpose</label>
-                    <input id="purpose" class="form-control" required>
-                    <div class="invalid-feedback">Purpose is required.</div>
-                  </div>
-                  <div class="col-sm-6">
-                    <label for="departure" class="form-label">Departure</label>
-                    <input type="date" id="departure" class="form-control" required>
-                  </div>
-                  <div class="col-sm-6">
-                    <label for="return" class="form-label">Return</label>
-                    <input type="date" id="return" class="form-control" required>
-                  </div>
-                  <div class="d-grid d-sm-flex gap-2 mt-2">
-                    <button type="submit" class="btn btn-primary flex-fill"><i class="bi bi-plus-circle me-1"></i>Save</button>
-                    <button type="button" id="updateBtn" class="btn btn-outline-primary flex-fill" disabled><i class="bi bi-pencil me-1"></i>Update</button>
-                    <button type="button" id="deleteBtn" class="btn btn-outline-danger flex-fill" disabled><i class="bi bi-trash me-1"></i>Delete</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
         </div>
       </main>
+    </div>
+
+    <!-- Travel Modal (New/Edit Travel) -->
+    <div class="modal fade" id="travelModal" tabindex="-1" aria-labelledby="travelModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title" id="travelModalLabel">New / Edit Travel</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="travelForm" class="row g-3 needs-validation" novalidate>
+              <div class="col-sm-6">
+                <label for="rank" class="form-label">Rank</label>
+                <input id="rank" class="form-control" required>
+                <div class="invalid-feedback">Rank is required.</div>
+              </div>
+              <div class="col-sm-6">
+                <label for="name" class="form-label">Name</label>
+                <input id="name" class="form-control" required>
+                <div class="invalid-feedback">Name is required.</div>
+              </div>
+              <div class="col-12">
+                <label for="destination" class="form-label">Destination</label>
+                <input id="destination" class="form-control" required>
+                <div class="invalid-feedback">Destination is required.</div>
+              </div>
+              <div class="col-12">
+                <label for="purpose" class="form-label">Purpose</label>
+                <input id="purpose" class="form-control" required>
+                <div class="invalid-feedback">Purpose is required.</div>
+              </div>
+              <div class="col-sm-6">
+                <label for="departure" class="form-label">Departure</label>
+                <input type="date" id="departure" class="form-control" required>
+              </div>
+              <div class="col-sm-6">
+                <label for="return" class="form-label">Return</label>
+                <input type="date" id="return" class="form-control" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="deleteBtn" class="btn btn-outline-danger me-auto" disabled>
+              <i class="bi bi-trash me-1"></i>Delete
+            </button>
+            <button type="button" id="updateBtn" class="btn btn-outline-primary" disabled>
+              <i class="bi bi-pencil me-1"></i>Update
+            </button>
+            <button type="submit" form="travelForm" class="btn btn-primary">
+              <i class="bi bi-check-circle me-1"></i>Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promotions Modal -->
+    <div class="modal fade" id="promotionsModal" tabindex="-1" aria-labelledby="promotionsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title" id="promotionsModalLabel">Promotions Form</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="promotionForm" class="row g-3 needs-validation" novalidate>
+              <div class="col-md-6">
+                <label for="promoName" class="form-label">Name</label>
+                <input type="text" id="promoName" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="promoRank" class="form-label">Current Rank</label>
+                <input type="text" id="promoRank" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="promoNewRank" class="form-label">Promoted Rank</label>
+                <input type="text" id="promoNewRank" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="promoDate" class="form-label">Promotion Date</label>
+                <input type="date" id="promoDate" class="form-control" required>
+              </div>
+              <div class="col-12">
+                <label for="promoRemarks" class="form-label">Remarks</label>
+                <textarea id="promoRemarks" class="form-control" rows="3"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="reset" form="promotionForm" class="btn btn-outline-secondary">Clear</button>
+            <button type="submit" form="promotionForm" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Travel Authority Modal -->
+    <div class="modal fade" id="travelAuthorityModal" tabindex="-1" aria-labelledby="travelAuthorityModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title" id="travelAuthorityModalLabel">Travel Authority Form</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="travelAuthorityForm" class="row g-3 needs-validation" novalidate>
+              <div class="col-md-6">
+                <label for="taName" class="form-label">Name</label>
+                <input type="text" id="taName" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="taRank" class="form-label">Rank</label>
+                <input type="text" id="taRank" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="taDestination" class="form-label">Destination</label>
+                <input type="text" id="taDestination" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="taPurpose" class="form-label">Purpose</label>
+                <input type="text" id="taPurpose" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="taDeparture" class="form-label">Departure</label>
+                <input type="date" id="taDeparture" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="taReturn" class="form-label">Return</label>
+                <input type="date" id="taReturn" class="form-control" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="reset" form="travelAuthorityForm" class="btn btn-outline-secondary">Clear</button>
+            <button type="submit" form="travelAuthorityForm" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detailsModalLabel">Personnel Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="detailsForm" class="row g-3 needs-validation" novalidate>
+              <div class="col-md-6">
+                <label for="dName" class="form-label">Name</label>
+                <input type="text" id="dName" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="dRank" class="form-label">Rank</label>
+                <input type="text" id="dRank" class="form-control" required>
+              </div>
+              <div class="col-12">
+                <label for="dAddress" class="form-label">Address</label>
+                <textarea id="dAddress" class="form-control" rows="2" required></textarea>
+              </div>
+              <div class="col-md-6">
+                <label for="dBirth" class="form-label">Date of Birth</label>
+                <input type="date" id="dBirth" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="dContact" class="form-label">Contact No.</label>
+                <input type="text" id="dContact" class="form-control" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="reset" form="detailsForm" class="btn btn-outline-secondary">Clear</button>
+            <button type="submit" form="detailsForm" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Retirement Modal -->
+    <div class="modal fade" id="retirementModal" tabindex="-1" aria-labelledby="retirementModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title" id="retirementModalLabel">Retirement Form</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="retirementForm" class="row g-3 needs-validation" novalidate>
+              <div class="col-md-6">
+                <label for="rName" class="form-label">Name</label>
+                <input type="text" id="rName" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="rRank" class="form-label">Rank</label>
+                <input type="text" id="rRank" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="rDate" class="form-label">Retirement Date</label>
+                <input type="date" id="rDate" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="rYears" class="form-label">Years of Service</label>
+                <input type="number" id="rYears" class="form-control" required>
+              </div>
+              <div class="col-12">
+                <label for="rRemarks" class="form-label">Remarks</label>
+                <textarea id="rRemarks" class="form-control" rows="3"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="reset" form="retirementForm" class="btn btn-outline-secondary">Clear</button>
+            <button type="submit" form="retirementForm" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Waivers Modal -->
+    <div class="modal fade" id="waiversModal" tabindex="-1" aria-labelledby="waiversModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title" id="waiversModalLabel">Waivers Form</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="waiversForm" class="row g-3 needs-validation" novalidate>
+              <div class="col-md-6">
+                <label for="wName" class="form-label">Name</label>
+                <input type="text" id="wName" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="wRank" class="form-label">Rank</label>
+                <input type="text" id="wRank" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="wType" class="form-label">Waiver Type</label>
+                <input type="text" id="wType" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="wDate" class="form-label">Date</label>
+                <input type="date" id="wDate" class="form-control" required>
+              </div>
+              <div class="col-12">
+                <label for="wRemarks" class="form-label">Remarks</label>
+                <textarea id="wRemarks" class="form-control" rows="3"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="reset" form="waiversForm" class="btn btn-outline-secondary">Clear</button>
+            <button type="submit" form="waiversForm" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Toast container -->
