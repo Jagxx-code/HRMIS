@@ -1,0 +1,98 @@
+
+/* ======= Tokens ======= */
+:root {
+  --brand-500:#003366;
+  --brand-600:#002a55;
+  --gold-500:#d6a400;
+
+  --bg:#f7f9fc;
+  --surface:#ffffff;
+  --text:#1c2430;
+  --muted:#6b7785;
+  --border:#e6e9ef;
+  --primary: var(--brand-500);
+  --accent: var(--gold-500);
+
+  --radius:.75rem;
+  --shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+[data-theme="dark"]{
+  --bg:#0f1115;
+  --surface:#171a21;
+  --text:#e7eaf0;
+  --muted:#9aa3b2;
+  --border:#2a2f3a;
+  --primary:#3b82f6;
+  --accent:#f5c84b;
+  --shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+
+html, body { height: 100%; }
+body {
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Bootstrap theme overrides */
+.bg-primary { background-color: var(--primary) !important; }
+.btn-primary { background-color: var(--primary); border-color: var(--primary); }
+.btn-outline-primary { color: var(--primary); border-color: var(--primary); }
+.btn-outline-primary:hover { background: var(--primary); color: #fff; }
+.text-secondary { color: var(--muted) !important; }
+.card { border-radius: var(--radius); box-shadow: var(--shadow); }
+.card .card-header { border-bottom: 1px solid var(--border); }
+
+/* Sidebar layout */
+.sidebar {
+  position: fixed;
+  top: 56px; /* navbar height */
+  bottom: 0; left: 0;
+  width: 260px;
+  background: var(--surface);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform .2s ease;
+  z-index: 1030;
+}
+.sidebar .nav-link { color: var(--text); border-radius: .5rem; }
+.sidebar .nav-link.active, .sidebar .nav-link:hover { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--text); }
+@media (min-width: 992px){
+  .sidebar { transform: none; }
+  .content { margin-left: 260px; }
+}
+.content { min-height: calc(100vh - 56px); }
+
+/* Sidebar toggled */
+.sidebar.show { transform: translateX(0); }
+#backdrop.show { display:block !important; }
+
+/* Tables */
+.table thead th {
+  position: sticky; top: 0; z-index: 1;
+  background: var(--surface);
+}
+.table-striped tbody tr:nth-of-type(odd) {
+  background: color-mix(in srgb, var(--primary) 4%, transparent);
+}
+.table-hover tbody tr:hover { background: color-mix(in srgb, var(--primary) 8%, transparent); }
+
+/* Focus visibility */
+:where(button, .btn, a, .nav-link, input, select, textarea):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: .5rem;
+}
+
+/* Images */
+img { max-width:100%; height:auto; }
+
+/* Motion reduction */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* Utility tweaks */
+.rounded-2xl { border-radius: 1rem; }
+.bg-body { background: var(--bg) !important; }
