@@ -1,4 +1,3 @@
-
 // ====== Helpers ======
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -55,7 +54,8 @@ function showToast(message, variant='primary') {
   div.addEventListener('hidden.bs.toast', () => div.remove());
 }
 
-// ====== Login (demo only) ======
+
+// ====== Login (client-side demo) ======
 (() => {
   const form = $('#loginForm');
   if (!form) return;
@@ -65,26 +65,54 @@ function showToast(message, variant='primary') {
       e.preventDefault(); e.stopPropagation();
     } else {
       e.preventDefault();
-      const user = $('#username')?.value.trim();
-      const pass = $('#password')?.value.trim();
-      // Demo credentials
-      if (user === 'admin' && pass === 'admin') {
-        showToast('Signed in. Redirecting…', 'success');
-        setTimeout(() => { window.location.href = 'Dashboard.html'; }, 600);
-      } else {
-        showToast('Invalid credentials (demo: admin/admin).', 'danger');
-      }
+      // In this demo, any non-empty credentials will proceed.
+      showToast('Signed in. Redirecting…', 'success');
+      setTimeout(() => { window.location.href = 'Dashboard.html'; }, 600);
     }
     form.classList.add('was-validated');
   });
 })();
 
-// ====== Table search & sort (Dashboard) ======
+
+
+// ====== Travel table (add/edit/delete with event delegation) ======
 (() => {
   const tbody = $('#travelTable');
   if (!tbody) return;
 
-  // search
+  const form = $('#travelForm');
+  const newBtn = $('#newTravelBtn');
+  const travelModalEl = document.getElementById('travelModal');
+  const modal = travelModalEl ? new bootstrap.Modal(travelModalEl) : null;
+
+  let editingRow = null;
+
+  // Helpers
+  const getFormData = () => ({
+    name: $('#name').value.trim(),
+    rank: $('#rank').value.trim(),
+    destination: $('#destination').value.trim(),
+    purpose: $('#purpose').value.trim(),
+    departure: $('#departure').value,
+    ret: $('#return').value,
+  });
+
+  const setFormData = (data) => {
+    $('#name').value = data.name || '';
+    $('#rank').value = data.rank || '';
+    $('#destination').value = data.destination || '';
+    $('#purpose').value = data.purpose || '';
+    $('#departure').value = data.departure || '';
+    $('#return').value = data.ret || '';
+  };
+
+  const actionsHTML = () => `
+    <td class="text-nowrap">
+      <button class="btn btn-sm btn-outline-primary" data-action="edit" title="Edit"><i class="bi bi-pencil"></i></button>
+      <button class="btn btn-sm btn-outline-danger" data-action="delete" title="Delete"><i class="bi bi-trash"></i></button>
+    </td>`;
+
+  // Search
   $('#tableSearch')?.addEventListener('input', e => {
     const q = e.target.value.toLowerCase();
     $$('#travelTable tr').forEach(tr => {
@@ -92,48 +120,55 @@ function showToast(message, variant='primary') {
     });
   });
 
-  // sort on header click
+  // Sort (skip Actions col)
   $$('thead th').forEach((th, idx) => {
+    if (th.hasAttribute('data-nosort')) return;
     th.style.cursor = 'pointer';
     th.title = 'Click to sort';
     th.addEventListener('click', () => {
       const rows = $$('#travelTable tr');
       const asc = !th.classList.toggle('sort-desc');
-      rows.sort((a,b) => a.children[idx].textContent
-        .localeCompare(b.children[idx].textContent, undefined, {numeric:true, sensitivity:'base'}));
+      rows.sort((a, b) => a.children[idx].textContent
+        .localeCompare(b.children[idx].textContent, undefined, { numeric: true, sensitivity: 'base' }));
       if (!asc) rows.reverse();
       rows.forEach(r => r.parentNode.appendChild(r));
     });
   });
 
-  // select row -> populate form
-  const form = $('#travelForm');
-  const updateBtn = $('#updateBtn');
-  const deleteBtn = $('#deleteBtn');
-  let selectedRow = null;
-
-  tbody.addEventListener('click', (e) => {
-    const tr = e.target.closest('tr');
-    if (!tr) return;
-    selectedRow = tr;
-    const [name, rank, dest, purpose, departure, ret] = [
-      tr.children[0].textContent,
-      tr.children[1].textContent,
-      tr.children[2].textContent,
-      tr.children[3].textContent,
-      tr.children[4].textContent,
-      tr.children[5].textContent,
-    ];
-    $('#name').value = name;
-    $('#rank').value = rank;
-    $('#destination').value = dest;
-    $('#purpose').value = purpose;
-    $('#departure').value = departure;
-    $('#return').value = ret;
-    updateBtn.disabled = deleteBtn.disabled = false;
+  // New Travel button clears edit state
+  newBtn?.addEventListener('click', () => {
+    editingRow = null;
+    form?.reset();
+    form?.classList.remove('was-validated');
   });
 
-  // create/save
+  // Event delegation for Edit/Delete
+  tbody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const tr = btn.closest('tr');
+    if (!tr) return;
+
+    const action = btn.getAttribute('data-action');
+    if (action === 'edit') {
+      editingRow = tr;
+      const data = {
+        name: tr.children[0].textContent.trim(),
+        rank: tr.children[1].textContent.trim(),
+        destination: tr.children[2].textContent.trim(),
+        purpose: tr.children[3].textContent.trim(),
+        departure: tr.children[4].textContent.trim(),
+        ret: tr.children[5].textContent.trim(),
+      };
+      setFormData(data);
+      modal?.show();
+    } else if (action === 'delete') {
+      tr.remove();
+      showToast('Record deleted', 'danger');
+    }
+  });
+
+  // Save (create or update)
   form?.addEventListener('submit', (e) => {
     if (!form.checkValidity()) {
       e.preventDefault(); e.stopPropagation();
@@ -141,42 +176,39 @@ function showToast(message, variant='primary') {
       return;
     }
     e.preventDefault();
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <th scope="row">${$('#name').value}</th>
-      <td>${$('#rank').value}</td>
-      <td>${$('#destination').value}</td>
-      <td>${$('#purpose').value}</td>
-      <td class="date">${$('#departure').value}</td>
-      <td class="date">${$('#return').value}</td>`;
-    tbody.appendChild(row);
-    showToast('Record saved', 'success');
+    const data = getFormData();
+
+    if (editingRow) {
+      editingRow.innerHTML = `
+        <th scope="row">${data.name}</th>
+        <td>${data.rank}</td>
+        <td>${data.destination}</td>
+        <td>${data.purpose}</td>
+        <td class="date">${data.departure}</td>
+        <td class="date">${data.ret}</td>
+      ` + actionsHTML();
+      showToast('Record updated', 'primary');
+    } else {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <th scope="row">${data.name}</th>
+        <td>${data.rank}</td>
+        <td>${data.destination}</td>
+        <td>${data.purpose}</td>
+        <td class="date">${data.departure}</td>
+        <td class="date">${data.ret}</td>
+      ` + actionsHTML();
+      tbody.appendChild(row);
+      showToast('Record saved', 'success');
+    }
+
+    editingRow = null;
     form.reset();
     form.classList.remove('was-validated');
-  });
-
-  // update
-  updateBtn?.addEventListener('click', () => {
-    if (!selectedRow) return;
-    selectedRow.innerHTML = `
-      <th scope="row">${$('#name').value}</th>
-      <td>${$('#rank').value}</td>
-      <td>${$('#destination').value}</td>
-      <td>${$('#purpose').value}</td>
-      <td class="date">${$('#departure').value}</td>
-      <td class="date">${$('#return').value}</td>`;
-    showToast('Record updated', 'primary');
-  });
-
-  // delete
-  deleteBtn?.addEventListener('click', () => {
-    if (!selectedRow) return;
-    selectedRow.remove();
-    selectedRow = null;
-    showToast('Record deleted', 'danger');
-    updateBtn.disabled = deleteBtn.disabled = true;
+    modal?.hide();
   });
 })();
+
 
 // ====== Bootstrap form validation helper (global) ======
 $$('.needs-validation').forEach(form => {
