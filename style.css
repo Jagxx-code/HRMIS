@@ -54,7 +54,7 @@ body {
   overflow-y: auto;
   transform: translateX(-100%);
   transition: transform .2s ease;
-  z-index: 1030;
+  z-index: 1056;
 }
 .sidebar .nav-link { color: var(--text); border-radius: .5rem; }
 .sidebar .nav-link.active, .sidebar .nav-link:hover { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--text); }
@@ -96,3 +96,74 @@ img { max-width:100%; height:auto; }
 /* Utility tweaks */
 .rounded-2xl { border-radius: 1rem; }
 .bg-body { background: var(--bg) !important; }
+
+/* ===== Dark Mode Table Fix ===== */
+[data-theme="dark"] .table,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+  color: var(--text) !important;
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .table thead,
+[data-theme="dark"] .table thead th {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) {
+  background-color: color-mix(in srgb, var(--primary) 5%, var(--surface)) !important;
+}
+
+[data-theme="dark"] .table-hover tbody tr:hover {
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--surface)) !important;
+}
+
+
+/* ===== Dark Mode: Keep modals readable (force light content inside modal) ===== */
+[data-theme="dark"] .modal-content {
+  background-color: #ffffff !important;
+  color: #1c2430 !important;
+  box-shadow: var(--shadow);
+}
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+  background-color: #f7f9fc !important;
+  border-color: #e6e9ef !important;
+}
+[data-theme="dark"] .modal .btn-close {
+  filter: none !important; /* default dark icon is fine on light header */
+  opacity: .7;
+}
+[data-theme="dark"] .modal input,
+[data-theme="dark"] .modal select,
+[data-theme="dark"] .modal textarea {
+  background-color: #ffffff !important;
+  color: #1c2430 !important;
+  border-color: #d0d7e2 !important;
+}
+[data-theme="dark"] .modal input::placeholder,
+[data-theme="dark"] .modal textarea::placeholder {
+  color: #6b7785 !important;
+}
+[data-theme="dark"] .modal .form-label {
+  color: #1c2430 !important;
+}
+/* Optional: slightly dim backdrop in dark mode for contrast */
+[data-theme="dark"] .modal-backdrop.show {
+  opacity: .6;
+}
+
+
+/* ===== Modal polish: subtle scale animation ===== */
+.modal.fade .modal-dialog {
+  transition: transform .2s ease, opacity .2s ease;
+  transform: translate(0, -5px) scale(.98);
+}
+.modal.show .modal-dialog {
+  transform: translate(0, 0) scale(1);
+}
+
+/* Ensure custom backdrop sits below the sidebar so links remain clickable on small screens */
+.offcanvas-backdrop { z-index: 1040; }
